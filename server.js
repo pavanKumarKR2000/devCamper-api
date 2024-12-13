@@ -1,13 +1,74 @@
 const express = require("express");
 const dotenv = require("dotenv");
+// const logger = require("./middlewares/logger");
+const morgan = require("morgan");
+const connectDB = require("./config/db");
+const fileupload=require("express-fileupload");
+const cookieParser=require("cookie-parser");
+const mongoSanitize=require("express-mongo-sanitize");
+const path=require("path")
+
+/** bootcamp router */
+const bootcamps = require("./routes/bootcamps");
+/** course router */
+const courses = require("./routes/courses");
+/** auth router */
+const auth=require("./routes/auth");
+/** users router */
+const users=require("./routes/users");
+/** reviews router */
+const reviews=require("./routes/reviews");
+
+
+const errorHandler = require("./middlewares/error");
 
 /**  load the envs */
 dotenv.config({ path: "./config/config.env" });
 
+/** connect to the database */
+connectDB();
+
 const app = express();
+
+/** json body middleware */
+app.use(express.json());
+
+// app.use(logger);
+
+// Dev logging middleware
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
+/** file upload middleware */
+app.use(fileupload());
+
+/** sanitize data */
+app.use(mongoSanitize());
+
+/** cookie parser */
+app.use(cookieParser());
+
+/** set static folder */
+app.use(express.static(path.join(__dirname,"public")))
+
+app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
+app.use("/api/v1/auth",auth);
+app.use("/api/v1/users",users);
+app.use("/api/v1/reviews",reviews);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
+});
+
+/** handle unhandled promise rejections */
+process.on("unhandledRejection", (error, promise) => {
+  console.log(`Error ${error.message}`);
+
+  /** close server and exit */
+  server.close(() => process.exit(1));
 });
