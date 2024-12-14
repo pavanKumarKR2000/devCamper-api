@@ -5,7 +5,7 @@ const doc = {
       title: 'devCamper api',
       description: 'Api related to the devCamper coding bootcamp'
     },
-    host: 'localhost:5000/api/v1',
+    host: 'https://devcamper-api-kvc0.onrender.com/api/v1',
     securityDefinitions: {
       bearerAuth: { // This name MUST match the inline security reference
         type: 'apiKey',
