@@ -9,6 +9,9 @@ const Review = require("../models/Review");
 //@route GET /api/v1/bootcamps/:bootcampId/reviews
 //@access Public
 const getReviews = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['reviews']
+ // #swagger.description = 'end point to get all reviews of a bootcamp'
+
     if (req.params.bootcampId) {
       const reviews = await Review.find({ bootcamp: req.params.bootcampId });
   
@@ -26,6 +29,9 @@ const getReviews = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/reviews/:id
 //@access Public
 const getReview = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['reviews']
+  // #swagger.description = 'end point to get a review'
+
    const review=await Review.findById(req.params.id).populate({
     path:"bootcamp",
     select:"name description"
@@ -45,6 +51,12 @@ const getReview = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/bootcamps/:bootcampId/reviews
 //@access Private
 const addReview = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['reviews']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'end point add a review'
+
     req.body.bootcamp=req.params.bootcampId;
     req.body.user=req.user.id;
  
@@ -66,8 +78,13 @@ const addReview = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/reviews/:id
 //@access Private
 const updateReview = asyncHandler(async (req, res, next) => {
-    let review=await Review.findById(req.params.id);
+  // #swagger.tags = ['reviews']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'end point to update a review'
 
+    let review=await Review.findById(req.params.id);
 
     if(!review){
         return next(new ErrorResponse(`No review with the id of ${req.params.id}`,404));
@@ -95,8 +112,13 @@ const updateReview = asyncHandler(async (req, res, next) => {
 //@route DELETE /api/v1/reviews/:id
 //@access Private
 const deleteReview = asyncHandler(async (req, res, next) => {
-    const review=await Review.findById(req.params.id);
+    // #swagger.tags = ['reviews']
+    /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+    // #swagger.description = 'end point to delete a review'
 
+    const review=await Review.findById(req.params.id);
 
     if(!review){
         return next(new ErrorResponse(`No review with the id of ${req.params.id}`,404));

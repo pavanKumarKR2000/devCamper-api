@@ -7,6 +7,9 @@ const fileupload=require("express-fileupload");
 const cookieParser=require("cookie-parser");
 const mongoSanitize=require("express-mongo-sanitize");
 const path=require("path")
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+
 
 /** bootcamp router */
 const bootcamps = require("./routes/bootcamps");
@@ -25,6 +28,8 @@ const errorHandler = require("./middlewares/error");
 /**  load the envs */
 dotenv.config({ path: "./config/config.env" });
 
+
+
 /** connect to the database */
 connectDB();
 
@@ -32,6 +37,9 @@ const app = express();
 
 /** json body middleware */
 app.use(express.json());
+
+/** swagger  */
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // app.use(logger);
 

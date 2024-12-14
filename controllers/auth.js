@@ -9,6 +9,9 @@ const crypto = require("crypto");
 // @access Public
 
 const register = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['auth']
+ // #swagger.description = 'end point to register an user'
+
   const { name, email, password, role } = req.body;
 
   /** create user */
@@ -27,6 +30,9 @@ const register = asyncHandler(async (req, res, next) => {
 // @access Public
 
 const login = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+    // #swagger.description = 'end point to login an user'
+
   const { email, password } = req.body;
 
   /** validate email and password */
@@ -56,6 +62,12 @@ const login = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/logout
 // @access Private
 const logout = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'end point to logout an user'
+
   res.status(200)
   .cookie("token","none",{expires:new Date(Date.now()+10*1000),httpOnly:true})
   .json({ success: true, data: {} });
@@ -65,6 +77,12 @@ const logout = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/me
 // @access Private
 const getMe = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+  // #swagger.description = 'end point to get the current user'
+
   const user = await User.findById(req.user.id);
 
   res.status(200).json({ success: true, data: user });
@@ -74,6 +92,13 @@ const getMe = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/auth/updatedetails
 // @access Private
 const updateDetails = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+   // #swagger.description = 'route to update user details' 
+
+
   const fieldsToUpdate = {
     name: req.body.name,
     email: req.body.email,
@@ -91,6 +116,12 @@ const updateDetails = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/updatepassword
 // @access Private
 const updatePassword = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'route to update user password'
+
   const user = await User.findById(req.user.id).select("+password");
 
   /** check current password */
@@ -108,6 +139,13 @@ const updatePassword = asyncHandler(async (req, res, next) => {
 // @route POST /api/v1/auth/forgotpassword
 // @access Public
 const forgotPassword = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+    // #swagger.description = 'route to forgot password'
+
+
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
@@ -154,6 +192,12 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/resetpassword/:resetToken
 // @access Private
 const resetPassword = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['auth']
+   /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'route to get reset password'
+
   // Get hashed token
   const resetPasswordToken = crypto
     .createHash("sha256")

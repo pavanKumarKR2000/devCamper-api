@@ -8,6 +8,9 @@ const Bootcamp = require("../models/Bootcamp");
 //@route GET /api/v1/bootcamps/:bootcampId/courses
 //@access Public
 const getCourses = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['courses']
+ // #swagger.description = 'end point to get all courses'
+
   if (req.params.bootcampId) {
     const courses = await Course.find({ bootcamp: req.params.bootcampId });
 
@@ -25,6 +28,9 @@ const getCourses = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/courses/:id
 //@access Public
 const getCourse = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['courses']
+ // #swagger.description = 'end point to get a course'
+
   const course = await Course.findById(req.params.id).populate({
     path: "bootcamp",
     select: "name description",
@@ -44,6 +50,12 @@ const getCourse = asyncHandler(async (req, res, next) => {
 //@route POST /api/v1/bootcamps/:bootcampId/courses
 //@access Private
 const addCourse = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['courses']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+// #swagger.description = 'end point to add a course'
+          
   req.body.bootcamp = req.params.bootcampId;
 
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
@@ -64,12 +76,18 @@ const addCourse = asyncHandler(async (req, res, next) => {
 //@route PUT /api/v1/courses/:id
 //@access Private
 const updateCourse = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['courses']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+// #swagger.description = 'end point to update a course'
+
   let course = await Course.findById(req.params.id);
 
   if (!course) {
     return next(
-      new ErrorResponse(`No course with the id of ${req.params.id}`),
-      404,
+      new ErrorResponse(`No course with the id of ${req.params.id}`,404),
+
     );
   }
 
@@ -85,6 +103,12 @@ const updateCourse = asyncHandler(async (req, res, next) => {
 //@route DELETE /api/v1/courses/:id
 //@access Private
 const deleteCourse = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['courses']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+// #swagger.description = 'end point to delete a bootcamp'
+
   const course = await Course.findById(req.params.id);
 
   if (!course) {

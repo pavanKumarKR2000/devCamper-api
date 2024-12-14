@@ -8,6 +8,9 @@ const path=require("path");
 //@route GET /api/v1/bootcamps
 //@access Public
 const getBootcamps = asyncHandler(async (req, res, next) => {
+   // #swagger.tags = ['bootcamps']
+   // #swagger.description = 'end point to get all bootcamps'
+
   res.status(200).json(res.advancedResults);
 });
 
@@ -15,6 +18,9 @@ const getBootcamps = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/bootcamps/:id
 //@access Public
 const getBootcamp = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+ // #swagger.description = 'wnd point to get a single bootcamp'
+
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
@@ -30,6 +36,11 @@ const getBootcamp = asyncHandler(async (req, res, next) => {
 //@route POST /api/v1/bootcamps
 //@access Private
 const createBootcamp = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+ // #swagger.description = 'end point to create a bootcamp'
 
   /** add user to req.body */
   req.body.user=req.user.id;
@@ -49,6 +60,12 @@ const createBootcamp = asyncHandler(async (req, res, next) => {
 //@route PUT /api/v1/bootcamps/:id
 //@access Private
 const updateBootcamp = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+// #swagger.description = 'end point to update a bootcamp
+
   let bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
@@ -74,6 +91,12 @@ const updateBootcamp = asyncHandler(async (req, res, next) => {
 //@route DELETE /api/v1/bootcamps/:id
 //@access Private
 const deleteBootcamp = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+  // #swagger.description = 'end point to delete a bootcamp'
+
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
@@ -96,6 +119,12 @@ const deleteBootcamp = asyncHandler(async (req, res, next) => {
 //@route DELETE /api/v1/bootcamps/radius/:zipcode/:distance
 //@access Private
 const getBootcampsInRadius = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+  // #swagger.description = 'end point to get all bootcamps within a radius'
+            
   const { zipcode, distance } = req.params;
 
   /** get latitude and longitude from geocoder */
@@ -129,6 +158,12 @@ const getBootcampsInRadius = asyncHandler(async (req, res, next) => {
 //@route PUT /api/v1/bootcamps/:id/photo
 //@access Private
 const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+  // #swagger.tags = ['bootcamps']
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+// #swagger.description = 'end point to upload bootcamp photo'
+
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
