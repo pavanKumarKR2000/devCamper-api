@@ -234,6 +234,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     ),
     httpOnly: true,
     sameSite: "None",
+    secure: true,
   };
 
   if (process.env.NODE_ENV === "production") {
