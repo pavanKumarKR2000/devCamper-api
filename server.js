@@ -23,6 +23,7 @@ const users = require("./routes/users");
 const reviews = require("./routes/reviews");
 
 const errorHandler = require("./middlewares/error");
+const ErrorResponse = require("./utils/errorResponse");
 
 /**  load the envs */
 dotenv.config({ path: "./config/config.env" });
@@ -49,7 +50,7 @@ app.use(
       if (allowedOrigins.indexOf(origin) !== -1) {
         return callback(null, true); // Allow the request
       } else {
-        return callback(new Error("Not allowed by CORS"));
+        return callback(new ErrorResponse("Not allowed by CORS", 500));
       }
     },
     credentials: true,
