@@ -71,10 +71,10 @@ const logout = asyncHandler(async (req, res, next) => {
     .status(200)
     .cookie("token", "none", {
       expires: new Date(Date.now() + 10 * 1000),
+      path: "/",
       httpOnly: true,
-      sameSite: "None",
       secure: true,
-      partitioned: true,
+      sameSite: "None",
     })
     .json({ success: true, data: {} });
 });
