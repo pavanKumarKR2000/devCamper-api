@@ -72,6 +72,9 @@ const logout = asyncHandler(async (req, res, next) => {
     .cookie("token", "none", {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      partitioned: true,
     })
     .json({ success: true, data: {} });
 });
@@ -235,6 +238,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     httpOnly: true,
     sameSite: "None",
     secure: true,
+    partitioned: true,
   };
 
   if (process.env.NODE_ENV === "production") {
