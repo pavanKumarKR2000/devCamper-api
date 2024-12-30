@@ -34,7 +34,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://dev-camper-frontend-9kg8g4sqc-pavankumarkr2000s-projects.vercel.app/auth/login",
+  "https://dev-camper-frontend-nvyigiarb-pavankumarkr2000s-projects.vercel.app",
 ];
 
 /** cors middleware */
