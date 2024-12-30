@@ -9,7 +9,7 @@ const Bootcamp = require("../models/Bootcamp");
 //@access Public
 const getCourses = asyncHandler(async (req, res, next) => {
   // #swagger.tags = ['courses']
- // #swagger.description = 'end point to get all courses'
+  // #swagger.description = 'end point to get all courses'
 
   if (req.params.bootcampId) {
     const courses = await Course.find({ bootcamp: req.params.bootcampId });
@@ -29,7 +29,7 @@ const getCourses = asyncHandler(async (req, res, next) => {
 //@access Public
 const getCourse = asyncHandler(async (req, res, next) => {
   // #swagger.tags = ['courses']
- // #swagger.description = 'end point to get a course'
+  // #swagger.description = 'end point to get a course'
 
   const course = await Course.findById(req.params.id).populate({
     path: "bootcamp",
@@ -39,7 +39,7 @@ const getCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new ErrorResponse(`No course with the id of ${req.params.id}`),
-      404,
+      404
     );
   }
 
@@ -54,8 +54,8 @@ const addCourse = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
-// #swagger.description = 'end point to add a course'
-          
+  // #swagger.description = 'end point to add a course'
+
   req.body.bootcamp = req.params.bootcampId;
 
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
@@ -63,7 +63,7 @@ const addCourse = asyncHandler(async (req, res, next) => {
   if (!bootcamp) {
     return next(
       new ErrorResponse(`No bootcamp with the id of ${req.params.id}`),
-      404,
+      404
     );
   }
 
@@ -80,14 +80,13 @@ const updateCourse = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
-// #swagger.description = 'end point to update a course'
+  // #swagger.description = 'end point to update a course'
 
   let course = await Course.findById(req.params.id);
 
   if (!course) {
     return next(
-      new ErrorResponse(`No course with the id of ${req.params.id}`,404),
-
+      new ErrorResponse(`No course with the id of ${req.params.id}`, 404)
     );
   }
 
@@ -107,14 +106,14 @@ const deleteCourse = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
-// #swagger.description = 'end point to delete a bootcamp'
+  // #swagger.description = 'end point to delete a bootcamp'
 
   const course = await Course.findById(req.params.id);
 
   if (!course) {
     return next(
       new ErrorResponse(`No course with the id of ${req.params.id}`),
-      404,
+      404
     );
   }
 

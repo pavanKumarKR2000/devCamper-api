@@ -10,7 +10,7 @@ const crypto = require("crypto");
 
 const register = asyncHandler(async (req, res, next) => {
   // #swagger.tags = ['auth']
- // #swagger.description = 'end point to register an user'
+  // #swagger.description = 'end point to register an user'
 
   const { name, email, password, role } = req.body;
 
@@ -30,8 +30,8 @@ const register = asyncHandler(async (req, res, next) => {
 // @access Public
 
 const login = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-    // #swagger.description = 'end point to login an user'
+  // #swagger.tags = ['auth']
+  // #swagger.description = 'end point to login an user'
 
   const { email, password } = req.body;
 
@@ -57,28 +57,31 @@ const login = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
-
 // @desc logout
 // @route GET /api/v1/auth/logout
 // @access Private
 const logout = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
- // #swagger.description = 'end point to logout an user'
+  // #swagger.description = 'end point to logout an user'
 
-  res.status(200)
-  .cookie("token","none",{expires:new Date(Date.now()+10*1000),httpOnly:true})
-  .json({ success: true, data: {} });
+  res
+    .status(200)
+    .cookie("token", "none", {
+      expires: new Date(Date.now() + 10 * 1000),
+      httpOnly: true,
+    })
+    .json({ success: true, data: {} });
 });
 
 // @desc Get current logged in user
 // @route GET /api/v1/auth/me
 // @access Private
 const getMe = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
   // #swagger.description = 'end point to get the current user'
@@ -92,12 +95,11 @@ const getMe = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/auth/updatedetails
 // @access Private
 const updateDetails = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
-   // #swagger.description = 'route to update user details' 
-
+  // #swagger.description = 'route to update user details'
 
   const fieldsToUpdate = {
     name: req.body.name,
@@ -116,35 +118,34 @@ const updateDetails = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/updatepassword
 // @access Private
 const updatePassword = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
- // #swagger.description = 'route to update user password'
+  // #swagger.description = 'route to update user password'
 
   const user = await User.findById(req.user.id).select("+password");
 
   /** check current password */
-  if(!(await user.matchPassword(req.body.currentPassword))){
-    return next(new ErrorResponse("Password is incorrect",401));
+  if (!(await user.matchPassword(req.body.currentPassword))) {
+    return next(new ErrorResponse("Password is incorrect", 401));
   }
 
-  user.password=req.body.newPassword;
+  user.password = req.body.newPassword;
   await user.save();
 
-  sendTokenResponse(user,200,res)
+  sendTokenResponse(user, 200, res);
 });
 
-// @desc Get current logged in user
+// @desc  Forgot password
 // @route POST /api/v1/auth/forgotpassword
 // @access Public
 const forgotPassword = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
-    // #swagger.description = 'route to forgot password'
-
+  // #swagger.description = 'route to forgot password'
 
   const user = await User.findOne({ email: req.body.email });
 
@@ -159,7 +160,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // Create reset url
   const resetUrl = `${req.protocol}://${req.get(
-    "host",
+    "host"
   )}/api/v1/auth/resetpassword/${resetToken}`;
 
   const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
@@ -189,14 +190,14 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Reset password
-// @route GET /api/v1/auth/resetpassword/:resetToken
+// @route PUT /api/v1/auth/resetpassword/:resetToken
 // @access Private
 const resetPassword = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['auth']
-   /* #swagger.security = [{
+  // #swagger.tags = ['auth']
+  /* #swagger.security = [{
             "bearerAuth": []
     }] */
- // #swagger.description = 'route to get reset password'
+  // #swagger.description = 'route to get reset password'
 
   // Get hashed token
   const resetPasswordToken = crypto
@@ -229,7 +230,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   const options = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
@@ -252,5 +253,5 @@ module.exports = {
   resetPassword,
   updateDetails,
   updatePassword,
-  logout
+  logout,
 };

@@ -66,6 +66,8 @@ const BootcampSchema = new mongoose.Schema(
         "UI/UX",
         "Data Science",
         "Business",
+        "Blockchain",
+        "Software Testing",
         "Other",
       ],
     },
@@ -108,7 +110,7 @@ const BootcampSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
+  }
 );
 
 /** create bootcamp slug from name */

@@ -2,14 +2,14 @@ const Bootcamp = require("../models/Bootcamp");
 const ErrorResponse = require("../utils/errorResponse");
 const geocoder = require("../utils/geocoder");
 const asyncHandler = require("../middlewares/async");
-const path=require("path");
+const path = require("path");
 
 //@desc Get all bootcamps
 //@route GET /api/v1/bootcamps
 //@access Public
 const getBootcamps = asyncHandler(async (req, res, next) => {
-   // #swagger.tags = ['bootcamps']
-   // #swagger.description = 'end point to get all bootcamps'
+  // #swagger.tags = ['bootcamps']
+  // #swagger.description = 'end point to get all bootcamps'
 
   res.status(200).json(res.advancedResults);
 });
@@ -19,13 +19,13 @@ const getBootcamps = asyncHandler(async (req, res, next) => {
 //@access Public
 const getBootcamp = asyncHandler(async (req, res, next) => {
   // #swagger.tags = ['bootcamps']
- // #swagger.description = 'wnd point to get a single bootcamp'
+  // #swagger.description = 'wnd point to get a single bootcamp'
 
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     next(
-      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404),
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
 
@@ -40,17 +40,22 @@ const createBootcamp = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
- // #swagger.description = 'end point to create a bootcamp'
+  // #swagger.description = 'end point to create a bootcamp'
 
   /** add user to req.body */
-  req.body.user=req.user.id;
+  req.body.user = req.user.id;
 
   /** checked for published bootcamp */
-  const publishedBootcamp=await Bootcamp.findOne({user:req.user.id});
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
 
   /** if the user is not an admin,they can only add one bootcamp */
-  if(publishedBootcamp&&req.user.role!=="admin"){
-    return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`,400));
+  if (publishedBootcamp && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `The user with ID ${req.user.id} has already published a bootcamp`,
+        400
+      )
+    );
   }
 
   const bootcamp = await Bootcamp.create(req.body);
@@ -64,19 +69,24 @@ const updateBootcamp = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
-// #swagger.description = 'end point to update a bootcamp
+  // #swagger.description = 'end point to update a bootcamp
 
   let bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     next(
-      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404),
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
 
   /** make sure that updating user is the bootcamp owner or an admin*/
-  if(req.user.id!==bootcamp.user.toString()&&req.user.role!=="admin"){
-    return next(new ErrorResponse(`User ${req.user.id} is not authorized to modify the bootcamp`,401));
+  if (req.user.id !== bootcamp.user.toString() && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to modify the bootcamp`,
+        401
+      )
+    );
   }
 
   bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
@@ -101,16 +111,21 @@ const deleteBootcamp = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     next(
-      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404),
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
 
-   /** make sure that deleting user is the bootcamp owner or an admin */
-   if(req.user.id!==bootcamp.user.toString()&&req.user.role!=="admin"){
-    return next(new ErrorResponse(`User ${req.user.id} is not authorized to delete the bootcamp`,401));
+  /** make sure that deleting user is the bootcamp owner or an admin */
+  if (req.user.id !== bootcamp.user.toString() && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to delete the bootcamp`,
+        401
+      )
+    );
   }
 
-  bootcamp.deleteOne();
+  await Bootcamp.deleteOne({ _id: req.params.id });
 
   res.status(200).json({ success: true, data: {} });
 });
@@ -124,7 +139,7 @@ const getBootcampsInRadius = asyncHandler(async (req, res, next) => {
             "bearerAuth": []
     }] */
   // #swagger.description = 'end point to get all bootcamps within a radius'
-            
+
   const { zipcode, distance } = req.params;
 
   /** get latitude and longitude from geocoder */
@@ -162,54 +177,64 @@ const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   /* #swagger.security = [{
             "bearerAuth": []
     }] */
-// #swagger.description = 'end point to upload bootcamp photo'
+  // #swagger.description = 'end point to upload bootcamp photo'
 
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     next(
-      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404),
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
 
-   /** make sure that deleting user is the bootcamp owner or an admin */
-   if(req.user.id!==bootcamp.user.toString()&&req.user.role!=="admin"){
-    return next(new ErrorResponse(`User ${req.user.id} is not authorized to delete the bootcamp`,401));
+  /** make sure that deleting user is the bootcamp owner or an admin */
+  if (req.user.id !== bootcamp.user.toString() && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to delete the bootcamp`,
+        401
+      )
+    );
   }
 
-  if(!req.files){
-    return next(new ErrorResponse("Please upload a photo",400));
+  if (!req.files) {
+    return next(new ErrorResponse("Please upload a photo", 400));
   }
 
-  const file= req.files.file;
+  const file = req.files.file;
 
   /** make sure the image is a photo */
-  if(!file.mimetype.startsWith("image")){
-    return next(new ErrorResponse("Please upload an image file",400));
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse("Please upload an image file", 400));
   }
 
   /** check filesize */
-  if(file.size>process.env.MAX_FILE_UPLOAD){
-    return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,400));
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(
+      new ErrorResponse(
+        `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+        400
+      )
+    );
   }
 
   /** create a custom file name */
-  file.name=`photo_${bootcamp._id}${path.parse(file.name).ext}`;
+  file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
 
-  console.log("file name",file.name);
+  console.log("file name", file.name);
 
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`,async(err)=>{
-    if(err){
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+    if (err) {
       console.log(err);
-      return next(new ErrorResponse(`something went wrong while uploading file`,500));
+      return next(
+        new ErrorResponse(`something went wrong while uploading file`, 500)
+      );
     }
 
-    await Bootcamp.findByIdAndUpdate(req.params.id,{photo:file.name});
+    await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
 
-    res.status(200).json({ success: true, data:file.name});
-  } )
-
- 
+    res.status(200).json({ success: true, data: file.name });
+  });
 });
 
 module.exports = {
@@ -219,5 +244,5 @@ module.exports = {
   updateBootcamp,
   deleteBootcamp,
   getBootcampsInRadius,
-  bootcampPhotoUpload
+  bootcampPhotoUpload,
 };
